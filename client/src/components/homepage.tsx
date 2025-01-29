@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface Anime {
   mal_id: number;
@@ -14,6 +15,9 @@ const HomePage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
+  // console.log(recommended);
+  // console.log(trending);
 
   const fetchTrendingAnime = async () => {
     try {
@@ -120,7 +124,12 @@ const HomePage: React.FC = () => {
             {searchResults.map((anime, index) => (
               <div
                 key={`${anime.mal_id}-${index}`}
-                style={{ minWidth: '150px', textAlign: 'center' }}>
+                style={{
+                  minWidth: '150px',
+                  textAlign: 'center',
+                  cursor: 'pointer',
+                }}
+                onClick={() => navigate(`anime/${anime.mal_id}`)}>
                 <img
                   src={anime.images.jpg.image_url}
                   alt={anime.title}
@@ -152,7 +161,12 @@ const HomePage: React.FC = () => {
           {trending.map((anime, index) => (
             <div
               key={`${anime.mal_id}-${index}`}
-              style={{ minWidth: '150px', textAlign: 'center' }}>
+              style={{
+                minWidth: '150px',
+                textAlign: 'center',
+                cursor: 'pointer',
+              }}
+              onClick={() => navigate(`/anime/${anime.mal_id}`)}>
               <img
                 src={anime.images.jpg.image_url}
                 alt={anime.title}
@@ -180,24 +194,32 @@ const HomePage: React.FC = () => {
             overflowX: 'auto',
             padding: '10px',
           }}>
-          {recommended.map((anime, index) => (
-            <div
-              key={`${anime.mal_id}-${index}`}
-              style={{ minWidth: '150px', textAlign: 'center' }}>
-              <img
-                src={anime.entry?.[0]?.images?.jpg.image_url || ''}
-                alt={anime.title}
+          {recommended.map((anime, index) => {
+            const id = anime.mal_id.toString().split('-')[0]; // splits the mal_id and index and only shows mal_id
+            return (
+              <div
+                key={`${anime.mal_id}-${index}`}
                 style={{
-                  width: '100%',
-                  borderRadius: '8px',
-                  objectFit: 'cover',
+                  minWidth: '150px',
+                  textAlign: 'center',
+                  cursor: 'pointer',
                 }}
-              />
-              <p style={{ marginTop: '5px', fontSize: '14px' }}>
-                {anime.title}
-              </p>
-            </div>
-          ))}
+                onClick={() => navigate(`anime/${id}`)}>
+                <img
+                  src={anime.entry?.[0]?.images?.jpg.image_url || ''}
+                  alt={anime.title}
+                  style={{
+                    width: '100%',
+                    borderRadius: '8px',
+                    objectFit: 'cover',
+                  }}
+                />
+                <p style={{ marginTop: '5px', fontSize: '14px' }}>
+                  {anime.title}
+                </p>
+              </div>
+            );
+          })}
         </div>
       </section>
     </div>
