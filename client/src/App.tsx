@@ -1,29 +1,19 @@
-import { useEffect, useState } from 'react';
-// import React from 'react';
-// import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 import HomePage from './components/homepage';
+import AnimeDetails from './components/AnimeDetails';
 
-export default function App() {
-  const [serverData, setServerData] = useState('');
-
-  useEffect(() => {
-    async function readServerData() {
-      const resp = await fetch('/api/hello');
-      const data = await resp.json();
-
-      console.log('Data from server:', data);
-
-      setServerData(data.message);
-    }
-
-    readServerData();
-  }, []);
-
+const App: React.FC = () => {
   return (
     <>
-      <HomePage></HomePage>
-      <h1>{serverData}</h1>
+      <Router>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/anime/:id" element={<AnimeDetails />} />
+        </Routes>
+      </Router>
     </>
   );
-}
+};
+export default App;
