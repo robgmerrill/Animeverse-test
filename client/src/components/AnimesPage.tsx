@@ -47,6 +47,7 @@ const AnimeList: React.FC = () => {
         const data: ApiResponse = await response.json();
         setAnimeList(data.data);
         setTotalPages(data.pagination.last_visible_page);
+        // console.log(data);
       } catch (err: any) {
         console.error('Error fetching anime:', err);
         setError(err.message); // Set the error message for display

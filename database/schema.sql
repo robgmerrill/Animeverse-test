@@ -6,21 +6,21 @@ drop schema "public" cascade;
 
 create schema "public";
 
-create table "animes" (
-    "id"        serial PRIMARY KEY,
-    "title"     text not null,
-    "synopsis"  text not null,
-    "image"     text not null,
-    "episodes"  number not null,
-    "score"     number not null
+create table "animeDetails" (
+    "id"          serial PRIMARY KEY,
+    "title"       text not null,
+    "synopsis"    text not null,
+    "image"       text not null,
+    "episodes"    integer not null,
+    "score"       integer not null,
     "createdAt"   timestamptz not null DEFAULT now(),
     "updatedAt"   timestamptz not null DEFAULT now()
 );
 
 create table "users" (
-    "id"        serial PRIMARY KEY,
-    "username"     text not null,
-    "password"  text not null,
+    "id"          serial PRIMARY KEY,
+    "username"    text not null,
+    "password"    text not null,
     "createdAt"   timestamptz not null DEFAULT now(),
     "updatedAt"   timestamptz not null DEFAULT now()
 );
