@@ -1,118 +1,117 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface Anime {
   mal_id: number;
   title: string;
-  images: { jpg: { image_url: string } };
+  images: {
+    jpg: {
+      image_url: string;
+    };
+  };
+  synopsis: string;
+  // Add other properties as needed from the API response
 }
 
-const AnimesPage: React.FC = () => {
-  const [animes, setAnimes] = useState<Anime[]>([]);
-  const [filteredAnimes, setFilteredAnimes] = useState<Anime[]>([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [loading, setLoading] = useState(true);
+interface ApiResponse {
+  data: Anime[];
+  pagination: {
+    last_visible_page: number;
+    has_next_page: boolean;
+  };
+}
+
+const AnimeList: React.FC = () => {
+  const [animeList, setAnimeList] = useState<Anime[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchAnimes = async () => {
-      setLoading(true);
-      setError(null);
+    const fetchAnime = async (page: number) => {
+      setIsLoading(true);
+      setError(null); // Clear any previous errors
 
-      const results: Anime[] = [];
       try {
-        // Fetch 8 pages (25 results per page) to get 200 results
-        for (let page = 1; page <= 1; page++) {
-          const response = await fetch(
-            `https://api.jikan.moe/v4/anime?limit=25&page=${page}`
+        const response = await fetch(
+          `https://api.jikan.moe/v4/anime?page=${page}`
+        );
+
+        if (!response.ok) {
+          const errorData = await response.json(); // Try to get error details from the API
+          throw new Error(
+            errorData.message || `HTTP error! status: ${response.status}`
           );
-          const data = await response.json();
-          results.push(...data.data);
         }
-        setAnimes(results);
-        setFilteredAnimes(results); // Default to showing all results
-      } catch (err) {
+
+        const data: ApiResponse = await response.json();
+        setAnimeList(data.data);
+        setTotalPages(data.pagination.last_visible_page);
+      } catch (err: any) {
         console.error('Error fetching anime:', err);
-        setError('Failed to load animes. Please try again later.');
+        setError(err.message); // Set the error message for display
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
 
-    fetchAnimes();
-  }, []);
+    fetchAnime(currentPage);
+  }, [currentPage]);
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const term = e.target.value.toLowerCase();
-    setSearchTerm(term);
-
-    if (term.trim() === '') {
-      setFilteredAnimes(animes);
-    } else {
-      const filtered = animes.filter((anime) =>
-        anime.title?.toLowerCase().includes(term)
-      );
-      setFilteredAnimes(filtered);
-    }
+  const handleNextPage = () => {
+    setCurrentPage((prevPage) => prevPage + 1);
   };
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
-  if (error) {
-    return <p style={{ color: 'red' }}>{error}</p>;
-  }
+  const handlePrevPage = () => {
+    setCurrentPage((prevPage) => Math.max(1, prevPage - 1));
+  };
 
   return (
-    <div
-      style={{ padding: '20px', color: 'white', backgroundColor: '#1e1e1e' }}>
-      <h1 style={{ textAlign: 'center' }}>All Animes</h1>
-
-      {/* Search Bar */}
-      <div style={{ marginBottom: '20px', textAlign: 'center' }}>
-        <input
-          type="text"
-          placeholder="Search for an anime..."
-          value={searchTerm}
-          onChange={handleSearch}
-          style={{
-            width: '80%',
-            padding: '10px',
-            fontSize: '16px',
-            borderRadius: '8px',
-            border: '1px solid #ccc',
-          }}
-        />
-      </div>
-
-      {/* Display Animes */}
-      <div
+    <div>
+      <h1>Anime List</h1>
+      {isLoading && <p>Loading...</p>}
+      {error && <p style={{ color: 'red' }}>Error: {error}</p>}{' '}
+      {/* Display error message */}
+      <ul
         style={{
-          display: 'flex',
-          gap: '10px',
-          overflowX: 'auto',
-          padding: '10px',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+          gap: '20px',
         }}>
-        {filteredAnimes.map((anime) => (
-          <div
+        {animeList.map((anime) => (
+          <li
             key={anime.mal_id}
             style={{
-              minWidth: '150px',
-              textAlign: 'center',
+              border: '1px solid #ccc',
+              padding: '10px',
               cursor: 'pointer',
-            }}
-            onClick={() => (window.location.href = `/anime/${anime.mal_id}`)}>
+            }}>
             <img
               src={anime.images.jpg.image_url}
               alt={anime.title}
-              style={{ width: '100%', borderRadius: '8px', objectFit: 'cover' }}
+              style={{ maxWidth: '100%', height: 'auto' }}
             />
-            <p style={{ marginTop: '10px', fontSize: '14px' }}>{anime.title}</p>
-          </div>
+            <h3>{anime.title}</h3>
+            <p>{anime.synopsis?.slice(0, 200)}...</p>{' '}
+            {/* Display a snippet of the synopsis */}
+          </li>
         ))}
-      </div>
+      </ul>
+      <button
+        onClick={handlePrevPage}
+        disabled={currentPage === 1 || isLoading}>
+        Previous Page
+      </button>
+      <button
+        onClick={handleNextPage}
+        disabled={currentPage === totalPages || isLoading}>
+        Next Page
+      </button>
+      <p>
+        Page {currentPage} of {totalPages}
+      </p>
     </div>
   );
 };
 
-export default AnimesPage;
+export default AnimeList;

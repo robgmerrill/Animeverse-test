@@ -3,9 +3,12 @@
 
 -- EXAMPLE:
 
- insert into "todos"
-   ("task", "isCompleted")
-   values
-     ('Learn to code', false),
-     ('Build projects', false),
-     ('Get a job', false);
+ insert into "animes"
+   ("title", "synopsis", "image", "episodes", "score")
+  --  values
+  --    ('Learn to code', false),
+  --    ('Build projects', false),
+  --    ('Get a job', false);
+
+  insert into "users"
+    ("username", "password")

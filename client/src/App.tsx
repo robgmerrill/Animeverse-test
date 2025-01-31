@@ -10,7 +10,7 @@ const App: React.FC = () => {
     <>
       <Router>
         <nav>
-          <Link to="/">Home</Link>
+          <Link to="/">Home </Link>
           <Link to="/animes">All Animes</Link>
         </nav>
         <Routes>
