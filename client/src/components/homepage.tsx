@@ -23,6 +23,7 @@ const HomePage: React.FC = () => {
     try {
       const response = await fetch('https://api.jikan.moe/v4/top/anime');
       const data = await response.json();
+      // console.log(data);
       return data.data;
     } catch (error) {
       console.error('Error fetching trending anime:', error);
