@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface Anime {
   mal_id: number;
@@ -23,6 +24,7 @@ const AnimeCard: React.FC<{
 }> = ({ anime, user, onFavorite }) => {
   const isFavorite = user?.favorites.includes(anime.mal_id);
   const [liked, setLiked] = useState(isFavorite || false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setLiked(isFavorite || false);
@@ -42,11 +44,15 @@ const AnimeCard: React.FC<{
   };
 
   return (
-    <div className="anime-card">
+    <div
+      onClick={() => navigate(`/anime/${anime.mal_id}`)}
+      className="anime-card"
+      style={{ border: '1px solid #ccc', padding: '10px', cursor: 'pointer' }}>
       {anime.images?.jpg?.image_url && (
         <img src={anime.images.jpg.image_url} alt={anime.title} />
       )}
       <h3>{anime.title}</h3>
+
       <button onClick={handleLike} className={liked ? 'liked' : ''}>
         {liked ? 'Unlike' : 'Like'}
       </button>
@@ -71,7 +77,7 @@ const AnimeList: React.FC = () => {
         const data = await response.json();
         setAnimeList(data.data);
       } catch (err) {
-        setError(err.message);
+        setError('Failed to load anime details. Please try again later.');
         console.error('Error fetching anime:', err);
       } finally {
         setLoading(false);
@@ -123,7 +129,13 @@ const AnimeList: React.FC = () => {
   }
 
   return (
-    <div>
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+        gap: '20px',
+        minWidth: '1000px',
+      }}>
       {animeList.map((anime) => (
         <AnimeCard
           key={anime.mal_id}

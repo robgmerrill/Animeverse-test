@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface Anime {
   mal_id: number;
@@ -20,12 +21,13 @@ interface ApiResponse {
   };
 }
 
-const AnimeList: React.FC = () => {
+const AnimePage: React.FC = () => {
   const [animeList, setAnimeList] = useState<Anime[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchAnime = async (page: number) => {
@@ -69,7 +71,7 @@ const AnimeList: React.FC = () => {
 
   return (
     <div>
-      <h1>Anime List</h1>
+      <h1>All Animes</h1>
       {isLoading && <p>Loading...</p>}
       {error && <p style={{ color: 'red' }}>Error: {error}</p>}{' '}
       {/* Display error message */}
@@ -86,7 +88,8 @@ const AnimeList: React.FC = () => {
               border: '1px solid #ccc',
               padding: '10px',
               cursor: 'pointer',
-            }}>
+            }}
+            onClick={() => navigate(`/anime/${anime.mal_id}`)}>
             <img
               src={anime.images.jpg.image_url}
               alt={anime.title}
@@ -115,4 +118,4 @@ const AnimeList: React.FC = () => {
   );
 };
 
-export default AnimeList;
+export default AnimePage;
