@@ -24,7 +24,6 @@ const AnimeDetails: React.FC = () => {
         const response = await fetch(`https://api.jikan.moe/v4/anime/${id}`);
         const data = await response.json();
         setAnime(data.data);
-        // console.log(data);
       } catch (err) {
         console.error('Error fetching anime details:', err);
         setError('Failed to load anime details. Please try again later.');

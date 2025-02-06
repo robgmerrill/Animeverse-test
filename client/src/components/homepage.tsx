@@ -16,14 +16,11 @@ const HomePage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  // console.log(recommended);
-  // console.log(trending);
 
   const fetchTrendingAnime = async () => {
     try {
       const response = await fetch('https://api.jikan.moe/v4/top/anime');
       const data = await response.json();
-      // console.log(data);
       return data.data;
     } catch (error) {
       console.error('Error fetching trending anime:', error);

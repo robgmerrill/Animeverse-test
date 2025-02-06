@@ -10,7 +10,6 @@ interface Anime {
     };
   };
   synopsis: string;
-  // Add other properties as needed from the API response
 }
 
 interface ApiResponse {
@@ -32,7 +31,7 @@ const AnimePage: React.FC = () => {
   useEffect(() => {
     const fetchAnime = async (page: number) => {
       setIsLoading(true);
-      setError(null); // Clear any previous errors
+      setError(null); // Clears any previous errors
 
       try {
         const response = await fetch(
@@ -40,7 +39,7 @@ const AnimePage: React.FC = () => {
         );
 
         if (!response.ok) {
-          const errorData = await response.json(); // Try to get error details from the API
+          const errorData = await response.json();
           throw new Error(
             errorData.message || `HTTP error! status: ${response.status}`
           );
@@ -49,7 +48,6 @@ const AnimePage: React.FC = () => {
         const data: ApiResponse = await response.json();
         setAnimeList(data.data);
         setTotalPages(data.pagination.last_visible_page);
-        // console.log(data);
       } catch (err: any) {
         console.error('Error fetching anime:', err);
         setError(err.message); // Set the error message for display
