@@ -136,6 +136,7 @@ const AnimeList: React.FC = () => {
         gap: '20px',
         minWidth: '1000px',
       }}>
+      <h1>Saved Animes</h1>
       {animeList.map((anime) => (
         <AnimeCard
           key={anime.mal_id}
