@@ -4,6 +4,7 @@ import './App.css';
 import HomePage from './components/homepage';
 import AnimeDetails from './components/AnimeDetails';
 import AnimesPage from './components/AnimesPage';
+import AnimeList from './components/AnimeList';
 
 const App: React.FC = () => {
   return (
@@ -12,11 +13,13 @@ const App: React.FC = () => {
         <nav>
           <Link to="/">Home </Link>
           <Link to="/animes">All Animes</Link>
+          <Link to="/animeList"> Saved</Link>
         </nav>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/anime/:id" element={<AnimeDetails />} />
           <Route path="/animes" element={<AnimesPage />} />
+          <Route path="/animeList" element={<AnimeList />} />
         </Routes>
       </Router>
     </>
