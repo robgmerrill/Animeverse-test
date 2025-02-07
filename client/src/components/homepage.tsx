@@ -19,7 +19,9 @@ const HomePage: React.FC = () => {
 
   const fetchTrendingAnime = async () => {
     try {
-      const response = await fetch('https://api.jikan.moe/v4/top/anime');
+      const response = await fetch(
+        'https://api.jikan.moe/v4/top/anime?filter=bypopularity'
+      );
       const data = await response.json();
       return data.data;
     } catch (error) {
