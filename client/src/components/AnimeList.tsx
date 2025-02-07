@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 interface Anime {
   mal_id: number;
   title: string;
-  // ... other properties from the Jikan API you want to use
   images: {
     jpg: {
       image_url: string;
@@ -13,8 +11,8 @@ interface Anime {
 }
 
 interface User {
-  id: string; // Or however you identify your users
-  favorites: number[]; // Array of anime mal_id's
+  id: string;
+  favorites: number[];
 }
 
 const AnimeCard: React.FC<{
@@ -24,7 +22,6 @@ const AnimeCard: React.FC<{
 }> = ({ anime, user, onFavorite }) => {
   const isFavorite = user?.favorites.includes(anime.mal_id);
   const [liked, setLiked] = useState(isFavorite || false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     setLiked(isFavorite || false);
@@ -45,7 +42,6 @@ const AnimeCard: React.FC<{
 
   return (
     <div
-      onClick={() => navigate(`/anime/${anime.mal_id}`)}
       className="anime-card"
       style={{ border: '1px solid #ccc', padding: '10px', cursor: 'pointer' }}>
       {anime.images?.jpg?.image_url && (
@@ -62,7 +58,7 @@ const AnimeCard: React.FC<{
 
 const AnimeList: React.FC = () => {
   const [animeList, setAnimeList] = useState<Anime[]>([]);
-  const [user, setUser] = useState<User | null>(null); // Replace with your actual user data fetching
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -70,7 +66,7 @@ const AnimeList: React.FC = () => {
     // Fetch Anime Data
     const fetchAnime = async () => {
       try {
-        const response = await fetch('https://api.jikan.moe/v4/anime'); // Or a more specific endpoint
+        const response = await fetch('https://api.jikan.moe/v4/anime');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -86,10 +82,8 @@ const AnimeList: React.FC = () => {
 
     fetchAnime();
 
-    // Fetch User Data (replace with your actual authentication and data fetching)
     const fetchUser = async () => {
-      // Example: Fetch user data from local storage or an API
-      const storedUser = localStorage.getItem('user'); // Or your method
+      const storedUser = localStorage.getItem('user');
       if (storedUser) {
         setUser(JSON.parse(storedUser));
       } else {
@@ -108,9 +102,7 @@ const AnimeList: React.FC = () => {
       const updatedUser = { ...user, favorites: updatedFavorites };
 
       setUser(updatedUser);
-      localStorage.setItem('user', JSON.stringify(updatedUser)); // Or update via your API
-
-      // In a real app, you would send a request to your backend to update the user's favorites in the database.
+      localStorage.setItem('user', JSON.stringify(updatedUser));
       console.log(
         'Updating favorites for anime ID:',
         animeId,
