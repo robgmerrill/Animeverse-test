@@ -13,7 +13,8 @@ const App: React.FC = () => {
         <nav>
           <Link to="/">Home </Link>
           <Link to="/animes">All Animes</Link>
-          <Link to="/animeList"> Saved</Link>
+          <Link to="/animeList"> Favorites</Link>
+          <button>Logout</button>
         </nav>
         <Routes>
           <Route path="/" element={<HomePage />} />
